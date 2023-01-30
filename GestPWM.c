@@ -88,13 +88,13 @@ void GPWM_DispSettings(S_pwmSettings *pData, int Remote)
            
     lcd_gotoxy(1,2);
     /* Affichage vitesse */
-    printf_lcd("SpeedSetting %3d",(int)pData->SpeedSetting);
+    printf_lcd("SpeedSetting = %3d",(int)pData->SpeedSetting);
     /* Affichage vitesse absolue */
     lcd_gotoxy(1,3);
-    printf_lcd("absSpeed %2d",(int)pData->absSpeed);
+    printf_lcd("absSpeed = %2d",(int)pData->absSpeed);
     /* Afficahge de l'angle */
     lcd_gotoxy(1,4);
-    printf_lcd("Angle %3d",(int)pData->AngleSetting);                     
+    printf_lcd("Angle = %3d",(int)pData->AngleSetting);                     
 }
 
 // Execution PWM et gestion moteur à partir des info dans structure

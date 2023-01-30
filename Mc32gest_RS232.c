@@ -76,7 +76,8 @@ int GetMessage(S_pwmSettings *pData)
     static uint16_t ValCrc;       // en cas d'abandon en cours
     uint8_t  EndMess;
     uint8_t  NbCharToRead = 0;
-    int MessReady = 0;     // indique validité message reçu
+    static int MessReady;     // indique validité message reçu
+    static uint8_t IcycleRx;
     // Détermine le nombre de caractères à lire
     NbCharToRead = GetReadSize( &descrFifoRX);
     // Si >= taille message alors traite
@@ -139,7 +140,15 @@ int GetMessage(S_pwmSettings *pData)
                     break;
             } // end switch
         } // end while
-    } 
+    }
+    else
+    {   //remet un 0 seulment apres 10 mesage non lu
+        if(IcycleRx >=10)
+        {
+            MessReady=0;
+        }
+        IcycleRx ++;
+    }
     // Gestion control de flux de la réception
     // 12 correspond à 2 paquets de 6 (3/4 RxBuffer de 8)
     if(GetWriteSpace ( &descrFifoRX) >= 12) 

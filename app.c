@@ -145,7 +145,7 @@ void APP_Initialize ( void )
 void APP_Tasks ( void )
 {
      uint8_t CommStatus;
-
+     static uint8_t IcycleTx;
     /* Check the application's current state. */
     switch ( appData.state )
     {
@@ -192,10 +192,9 @@ void APP_Tasks ( void )
         }
         
         case APP_STATE_SERVICE_TASKS:
-        { 
-
+        {   
             //reception param. remote
-            CommStatus = GetMessage(&PwmData);
+                CommStatus = GetMessage(&PwmData);
             //lecture pot.
             if (CommStatus == 0)//local?
             {
@@ -209,15 +208,20 @@ void APP_Tasks ( void )
             GPWM_DispSettings(&PwmData,CommStatus);
             //execution PWM et gestion moteur
             GPWM_ExecPWM(&PwmData);
-            //envoi valeurs
-            if (CommStatus == 0) //local?
+            //effectue l'envoie aprés 5 cycle
+            if(IcycleTx >= 5 )
             {
-                SendMessage(&PwmData); //local
+                //envoi valeurs
+                if (CommStatus == 0) //local?
+                {
+                    SendMessage(&PwmData); //local
+                }
+                else 
+                {
+                    SendMessage(&PwmDataToSend); //remote
+                }
             }
-            else 
-            {
-                SendMessage(&PwmDataToSend); //remote
-            }
+            IcycleTx ++; //incrementation du compteur Cycle
             appData.state = APP_STATE_WAIT;
             break;
         }
